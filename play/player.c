@@ -4,10 +4,17 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#ifdef HAVE_CURSES
+#include <curses.h>
+#endif
 #include "error.h"
 #include "gettext.h"
 #include "sys/threads.h"
 #include "play/player.h"
+#ifdef HAVE_CURSES
+#include "play/vtcurses.h"
+static WINDOW *playwin;
+#endif
 
 static ttyrec_frame fr;
 static struct timeval t0, tc;
@@ -100,7 +107,11 @@ static void adjust_pos(int diff)
     if (tc.tv_sec<0)
         tc.tv_sec=tc.tv_usec=0;
     fr=ttyrec_seek(tr, &tc, &term);
+#ifdef HAVE_CURSES
+    vtcur_attach(term, playwin, 1);
+#else
     vtvt_attach(term, stdout, 1);
+#endif
     if (old_state)
         replay_start();
 }
@@ -211,10 +222,19 @@ void replay()
     int ch;
     struct bind *bp;
     
+#ifdef HAVE_CURSES
+    init_curses();
+    playwin=stdscr;
+#endif
+    
     play_state=0;
     tc.tv_sec=tc.tv_usec=0;
     fr=ttyrec_seek(tr, 0, &term);
+#ifdef HAVE_CURSES
+    vtcur_attach(term, playwin, 1);
+#else
     vtvt_attach(term, stdout, 1);
+#endif
     replay_start();
     
     while (1)
@@ -267,6 +287,10 @@ void replay()
     }
 end:
     replay_stop();
+#ifdef HAVE_CURSES
+    endwin();
+#else
     vt100_printf(term, "\e[f\e[200B");
+#endif
     vt100_free(term);
 }

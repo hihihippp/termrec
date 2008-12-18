@@ -63,6 +63,10 @@ AC_CHECK_LIB([z], [gzread], [AC_HAVE_LIB([z], [Z])], [
   AC_SHIPPED_LIB(LIBZ, zlib1.dll, zlib.h, [gzread(0,0,0)], [win32/])])
 AC_SUBST([LIBZ])
 
+# Check for wide curses.
+AC_CURSESW
+AM_CONDITIONAL(HAVE_CURSES, test x$ac_cv_have_cursesw = xyes)
+
 # Initialize the test suite.
 AC_CONFIG_TESTDIR(tests)
 AC_CONFIG_FILES([tests/Makefile tests/atlocal])

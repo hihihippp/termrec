@@ -1,7 +1,8 @@
 Source: termrec
 Priority: optional
 Maintainer: Adam Borowski <kilobyte@angband.pl>
-Build-Depends: debhelper (>= 7), autotools-dev, libbz2-dev, zlib1g-dev
+Build-Depends: debhelper (>= 7), autotools-dev, libbz2-dev, zlib1g-dev,
+ libncurses5-dev, libncursesw5-dev
 Standards-Version: 3.8.0
 Section: libs
 Homepage: http://angband.pl/termrec.html
